@@ -95,7 +95,7 @@ export default {
         this.checkedKeys = this.defaultCheckedKeys
         this.expandedKeys = this.checkedKeys
       }
-      this.dept.deptId = dept.id
+      this.dept.id = dept.id
     },
     handleSubmit () {
       let checkedArr = Object.is(this.checkedKeys.checked, undefined) ? this.checkedKeys : this.checkedKeys.checked
@@ -115,8 +115,8 @@ export default {
           if (Object.is(dept.parentId, undefined)) {
             dept.parentId = 0
           }
-          dept.deptId = this.dept.deptId
-          this.$put('dept', {
+          dept.id = this.dept.id
+          this.$put('sys/dept/update', {
             ...dept
           }).then(() => {
             this.reset()
@@ -131,7 +131,7 @@ export default {
   watch: {
     deptEditVisiable () {
       if (this.deptEditVisiable) {
-        this.$get('dept').then((r) => {
+        this.$get('sys/dept').then((r) => {
           this.deptTreeData = r.data.rows.children
           this.deptTreeKey = +new Date()
         })

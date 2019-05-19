@@ -173,7 +173,7 @@ export default {
         content: '当您点击确定按钮后，这些记录将会被彻底删除，如果其包含子记录，也将一并删除！',
         centered: true,
         onOk () {
-          that.$delete('dept/' + that.selectedRowKeys.join(',')).then(() => {
+          that.$delete('sys/dept/del/' + that.selectedRowKeys.join(',')).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.fetch()
