@@ -158,14 +158,14 @@ export default {
         sortOrder: sortedInfo.columnKey === 'username' && sortedInfo.order
       }, {
         title: '性别',
-        dataIndex: 'ssex',
+        dataIndex: 'sex',
         customRender: (text, row, index) => {
           switch (text) {
-            case '0':
+            case 0:
               return '男'
-            case '1':
+            case 1:
               return '女'
-            case '2':
+            case 2:
               return '保密'
             default:
               return text
@@ -409,7 +409,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      this.$get('user', {
+      this.$get('sys/user/list', {
         ...params
       }).then((r) => {
         let data = r.data
