@@ -24,7 +24,7 @@
       </a-form-item>
       <a-form-item label="手机" v-bind="formItemLayout">
         <a-input
-          v-decorator="['mobile', {rules: [
+          v-decorator="['phone', {rules: [
             { pattern: '^0?(13[0-9]|15[012356789]|17[013678]|18[0-9]|14[57])[0-9]{8}$', message: '请输入正确的手机号'}
           ]}]"/>
       </a-form-item>
@@ -37,7 +37,7 @@
             'roleId',
             {rules: [{ required: true, message: '请选择角色' }]}
           ]">
-          <a-select-option v-for="r in roleData" :key="r.roleId.toString()">{{r.roleName}}</a-select-option>
+          <a-select-option v-for="r in roleData" :key="r.id">{{r.role}}</a-select-option>
         </a-select>
       </a-form-item>
       <a-form-item label='部门' v-bind="formItemLayout">
@@ -55,19 +55,19 @@
             'status',
             {rules: [{ required: true, message: '请选择状态' }]}
           ]">
-          <a-radio value="0">锁定</a-radio>
-          <a-radio value="1">有效</a-radio>
+          <a-radio value=0>锁定</a-radio>
+          <a-radio value=1>有效</a-radio>
         </a-radio-group>
       </a-form-item>
       <a-form-item label='性别' v-bind="formItemLayout">
         <a-radio-group
           v-decorator="[
-            'ssex',
+            'sex',
             {rules: [{ required: true, message: '请选择性别' }]}
           ]">
-          <a-radio value="0">男</a-radio>
-          <a-radio value="1">女</a-radio>
-          <a-radio value="2">保密</a-radio>
+          <a-radio value=0>男</a-radio>
+          <a-radio value=1>女</a-radio>
+          <a-radio value=2>保密</a-radio>
         </a-radio-group>
       </a-form-item>
     </a-form>
@@ -100,6 +100,7 @@ export default {
       deptTreeData: [],
       roleData: [],
       userDept: [],
+      id: '',
       userId: '',
       loading: false
     }
@@ -119,8 +120,9 @@ export default {
       this.$emit('close')
     },
     setFormValues ({...user}) {
+      this.id = user.id
       this.userId = user.userId
-      let fields = ['username', 'email', 'status', 'ssex', 'mobile']
+      let fields = ['username', 'email', 'status', 'sex', 'phone']
       Object.keys(user).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)
@@ -132,7 +134,7 @@ export default {
       if (user.roleId) {
         this.form.getFieldDecorator('roleId')
         let roleArr = user.roleId.split(',')
-        this.form.setFieldsValue({'roleId': roleArr})
+        this.form.setFieldsValue({'roleId': parseInt(roleArr)})
       }
       if (user.deptId) {
         this.userDept = [user.deptId]
@@ -146,10 +148,11 @@ export default {
         if (!err) {
           this.loading = true
           let user = this.form.getFieldsValue()
-          user.roleId = user.roleId.join(',')
+          // user.roleId = user.roleId.join(',')
+          user.id = this.id
           user.userId = this.userId
           user.deptId = this.userDept
-          this.$put('user', {
+          this.$put('sys/user/update', {
             ...user
           }).then((r) => {
             this.loading = false
@@ -170,10 +173,10 @@ export default {
   watch: {
     userEditVisiable () {
       if (this.userEditVisiable) {
-        this.$get('role').then((r) => {
-          this.roleData = r.data.rows
+        this.$get('sys/role/list').then((r) => {
+          this.roleData = r.data.data
         })
-        this.$get('dept').then((r) => {
+        this.$get('sys/dept').then((r) => {
           this.deptTreeData = r.data.rows.children
         })
       }

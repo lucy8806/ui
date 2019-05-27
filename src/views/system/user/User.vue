@@ -161,11 +161,11 @@ export default {
         dataIndex: 'sex',
         customRender: (text, row, index) => {
           switch (text) {
-            case 0:
+            case '0':
               return '男'
-            case 1:
+            case '1':
               return '女'
-            case 2:
+            case '2':
               return '保密'
             default:
               return text
@@ -189,7 +189,7 @@ export default {
         dataIndex: 'deptName'
       }, {
         title: '电话',
-        dataIndex: 'mobile'
+        dataIndex: 'phone'
       }, {
         title: '状态',
         dataIndex: 'status',
@@ -212,9 +212,9 @@ export default {
         onFilter: (value, record) => record.status.includes(value)
       }, {
         title: '创建时间',
-        dataIndex: 'createTime',
+        dataIndex: 'createtime',
         sorter: true,
-        sortOrder: sortedInfo.columnKey === 'createTime' && sortedInfo.order
+        sortOrder: sortedInfo.columnKey === 'createtime' && sortedInfo.order
       }, {
         title: '操作',
         dataIndex: 'operation',

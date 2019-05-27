@@ -15,7 +15,7 @@
         <p><a-icon type="user"/>账户：{{userInfoData.username}}</p>
         <p :title="userInfoData.roleName"><a-icon type="star"/>角色：{{userInfoData.roleName? userInfoData.roleName: '暂无角色'}}</p>
         <p><a-icon type="skin"/>性别：{{sex}}</p>
-        <p><a-icon type="phone"/>电话：{{userInfoData.mobile ? userInfoData.mobile : '暂未绑定电话'}}</p>
+        <p><a-icon type="phone"/>电话：{{userInfoData.phone ? userInfoData.phone : '暂未绑定电话'}}</p>
         <p><a-icon type="mail"/>邮箱：{{userInfoData.email ? userInfoData.email : '暂未绑定邮箱'}}</p>
       </a-layout-content>
       <a-layout-content class="user-content-two">
@@ -33,7 +33,7 @@
             {{userInfoData.status}}
           </template>
         </p>
-        <p><a-icon type="clock-circle"/>创建时间：{{userInfoData.createTime}}</p>
+        <p><a-icon type="clock-circle"/>创建时间：{{userInfoData.createtime}}</p>
         <p><a-icon type="login" />最近登录：{{userInfoData.lastLoginTime}}</p>
         <p :title="userInfoData.description"><a-icon type="message"/>描述：{{userInfoData.description}}</p>
       </a-layout-content>
@@ -61,7 +61,7 @@ export default {
       }
     },
     sex () {
-      switch (this.userInfoData.ssex) {
+      switch (this.userInfoData.sex) {
         case '0':
           return '男'
         case '1':
@@ -69,7 +69,7 @@ export default {
         case '2':
           return '保密'
         default:
-          return this.userInfoData.ssex
+          return this.userInfoData.sex
       }
     }
   },

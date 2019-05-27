@@ -18,7 +18,7 @@
                  v-decorator="['username',{rules: [{ required: true, message: '用户名不能为空'}]}]"/>
       </a-form-item>
       <a-form-item label='密码' v-bind="formItemLayout">
-        <a-tooltip title='新用户默认密码为 1234qwer'>
+        <a-tooltip title='新用户默认密码为 123456'>
           <a-input type='password' readOnly :value="defaultPassword"/>
         </a-tooltip>
       </a-form-item>
@@ -32,7 +32,7 @@
       </a-form-item>
       <a-form-item label="手机" v-bind="formItemLayout">
         <a-input
-          v-model="user.mobile"
+          v-model="user.phone"
           v-decorator="['mobile', {rules: [
             { pattern: '^0?(13[0-9]|15[012356789]|17[013678]|18[0-9]|14[57])[0-9]{8}$', message: '请输入正确的手机号'}
           ]}]"/>
@@ -44,7 +44,7 @@
           v-model="user.roleId"
           style="width: 100%"
           v-decorator="['role',{rules: [{ required: true, message: '请选择角色' }]}]">
-          <a-select-option v-for="r in roleData" :key="r.roleId">{{r.roleName}}</a-select-option>
+          <a-select-option v-for="r in roleData" :key="String(r.id)">{{r.role}}</a-select-option>
         </a-select>
       </a-form-item>
       <a-form-item label='部门' v-bind="formItemLayout">
@@ -66,8 +66,8 @@
       </a-form-item>
       <a-form-item label='性别' v-bind="formItemLayout">
         <a-radio-group
-          v-model="user.ssex"
-          v-decorator="['ssex',{rules: [{ required: true, message: '请选择性别' }]}]">
+          v-model="user.sex"
+          v-decorator="['sex',{rules: [{ required: true, message: '请选择性别' }]}]">
           <a-radio value="0">男</a-radio>
           <a-radio value="1">女</a-radio>
           <a-radio value="2">保密</a-radio>
@@ -103,7 +103,7 @@ export default {
       roleData: [],
       deptTreeData: [],
       formItemLayout,
-      defaultPassword: '1234qwer',
+      defaultPassword: '123456',
       form: this.$form.createForm(this),
       validateStatus: '',
       help: ''
@@ -129,7 +129,7 @@ export default {
         if (!err && this.validateStatus === 'success') {
           this.loading = true
           this.user.roleId = this.user.roleId.join(',')
-          this.$post('user', {
+          this.$post('sys/user/add', {
             ...this.user
           }).then((r) => {
             this.reset()
@@ -151,8 +151,8 @@ export default {
           this.help = '用户名不能少于4个字符'
         } else {
           this.validateStatus = 'validating'
-          this.$get(`user/check/${username}`).then((r) => {
-            if (r.data) {
+          this.$get(`sys/user/check/${username}`).then((r) => {
+            if (r.data.data) {
               this.validateStatus = 'success'
               this.help = ''
             } else {
@@ -170,10 +170,10 @@ export default {
   watch: {
     userAddVisiable () {
       if (this.userAddVisiable) {
-        this.$get('role').then((r) => {
-          this.roleData = r.data.rows
+        this.$get('sys/role/list').then((r) => {
+          this.roleData = r.data.data
         })
-        this.$get('dept').then((r) => {
+        this.$get('sys/dept').then((r) => {
           this.deptTreeData = r.data.rows.children
         })
       }
