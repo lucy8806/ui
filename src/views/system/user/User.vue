@@ -288,9 +288,9 @@ export default {
         onOk () {
           let userIds = []
           for (let key of that.selectedRowKeys) {
-            userIds.push(that.dataSource[key].userId)
+            userIds.push(that.dataSource[key].id)
           }
-          that.$delete('user/' + userIds.join(',')).then(() => {
+          that.$delete('sys/user/delete/' + userIds.join(',')).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
