@@ -37,7 +37,7 @@
             'roleId',
             {rules: [{ required: true, message: '请选择角色' }]}
           ]">
-          <a-select-option v-for="r in roleData" :key="r.id">{{r.role}}</a-select-option>
+          <a-select-option v-for="r in roleData" :key="r.id.toString()">{{r.role}}</a-select-option>
         </a-select>
       </a-form-item>
       <a-form-item label='部门' v-bind="formItemLayout">
@@ -134,7 +134,7 @@ export default {
       if (user.roleId) {
         this.form.getFieldDecorator('roleId')
         let roleArr = user.roleId.split(',')
-        this.form.setFieldsValue({'roleId': parseInt(roleArr)})
+        this.form.setFieldsValue({'roleId': roleArr})
       }
       if (user.deptId) {
         this.userDept = [user.deptId]
