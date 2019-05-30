@@ -176,7 +176,7 @@ export default {
         this.checkedKeys = this.defaultCheckedKeys
         this.expandedKeys = this.checkedKeys
       }
-      this.menu.menuId = menu.id
+      this.menu.id = menu.id
       this.menuTreeKey = +new Date()
     },
     handleSubmit () {
@@ -185,7 +185,7 @@ export default {
         this.$message.error('最多只能选择一个上级菜单，请修改')
         return
       }
-      if (checkedArr[0] === this.menu.menuId) {
+      if (checkedArr[0] === this.menu.id) {
         this.$message.error('不能选择自己作为上级菜单，请修改')
         return
       }
@@ -195,15 +195,19 @@ export default {
           let icon = this.menu.icon
           let menu = this.form.getFieldsValue()
           menu.icon = icon
-          menu.menuId = this.menu.menuId
+          menu.id = this.menu.id
+          menu.name = menu.menuName
+          menu.priority = menu.orderNum
+          menu.permission = menu.perms
+          menu.url = menu.path
           if (checkedArr.length) {
             menu.parentId = checkedArr[0]
           } else {
             menu.parentId = ''
           }
-          // 0 表示菜单 1 表示按钮
-          menu.type = '0'
-          this.$put('menu', {
+          // 1 表示菜单 2 表示按钮
+          menu.type = '1'
+          this.$put('resource/update', {
             ...menu
           }).then(() => {
             this.reset()
@@ -218,7 +222,7 @@ export default {
   watch: {
     menuEditVisiable () {
       if (this.menuEditVisiable) {
-        this.$get('menu', {
+        this.$get('resource/list', {
           type: '0'
         }).then((r) => {
           this.menuTreeData = r.data.rows.children

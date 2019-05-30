@@ -10,7 +10,7 @@
                 label="名称"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.menuName"/>
+                <a-input v-model="queryParams.name"/>
               </a-form-item>
             </a-col>
             <a-col :md="12" :sm="24" >
@@ -38,9 +38,9 @@
           @cancel="() => createMenu()"
           @confirm="() => createButton()">
           <a-icon slot="icon" type="question-circle-o" style="color: orangered" />
-          <a-button type="primary" v-hasPermission="'menu:add'" ghost>新增</a-button>
+          <a-button type="primary" v-hasPermission="'resource:add'" ghost>新增</a-button>
         </a-popconfirm>
-        <a-button v-hasPermission="'menu:delete'" @click="batchDelete">删除</a-button>
+        <a-button v-hasPermission="'resource:delete'" @click="batchDelete">删除</a-button>
         <a-dropdown v-hasPermission="'menu:export'">
           <a-menu slot="overlay">
             <a-menu-item key="export-data" @click="exprotExccel">导出Excel</a-menu-item>
@@ -62,8 +62,8 @@
          <a-icon :type="text" />
         </template>
         <template slot="operation" slot-scope="text, record">
-          <a-icon v-hasPermission="'menu:update'" type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修改"></a-icon>
-          <a-badge v-hasNoPermission="'menu:update'" status="warning" text="无权限"></a-badge>
+          <a-icon v-hasPermission="'resource:edit'" type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修改"></a-icon>
+          <a-badge v-hasNoPermission="'resource:edit'" status="warning" text="无权限"></a-badge>
         </template>
       </a-table>
     </div>
@@ -147,14 +147,16 @@ export default {
             case '0':
               return <a-tag color="cyan"> 菜单 </a-tag>
             case '1':
+              return <a-tag color="cyan"> 菜单 </a-tag>
+            case '2':
               return <a-tag color="pink"> 按钮 </a-tag>
             default:
               return text
           }
         },
         filters: [
-          {text: '按钮', value: '1'},
-          {text: '菜单', value: '0'}
+          {text: '按钮', value: '2'},
+          {text: '菜单', value: '1'}
         ],
         filterMultiple: false,
         filteredValue: filteredInfo.type || null,
@@ -210,7 +212,7 @@ export default {
       this.fetch()
     },
     edit (record) {
-      if (record.type === '0') {
+      if (record.type === '1' || record.type === '0') {
         this.$refs.menuEdit.setFormValues(record)
         this.menuEditVisiable = true
       } else {
@@ -257,7 +259,7 @@ export default {
         content: '当您点击确定按钮后，这些记录将会被彻底删除，如果其包含子记录，也将一并删除！',
         centered: true,
         onOk () {
-          that.$delete('menu/' + that.selectedRowKeys.join(',')).then(() => {
+          that.$delete('resource/del/' + that.selectedRowKeys.join(',')).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.fetch()
@@ -305,7 +307,7 @@ export default {
     },
     fetch (params = {}) {
       this.loading = true
-      this.$get('menu', {
+      this.$get('resource/list', {
         ...params
       }).then((r) => {
         let data = r.data

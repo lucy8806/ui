@@ -10,7 +10,7 @@
     style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
     <a-form :form="form">
       <a-form-item label='按钮名称' v-bind="formItemLayout">
-        <a-input v-model="button.menuName"
+        <a-input v-model="button.name"
                  v-decorator="['menuName',
                    {rules: [
                     { required: true, message: '按钮名称不能为空'},
@@ -18,7 +18,7 @@
                   ]}]"/>
       </a-form-item>
       <a-form-item label='相关权限' v-bind="formItemLayout">
-        <a-input v-model="button.perms"
+        <a-input v-model="button.permission"
                  v-decorator="['perms',
                    {rules: [
                     { max: 50, message: '长度不能超过50个字符'}
@@ -121,9 +121,9 @@ export default {
           } else {
             this.button.parentId = ''
           }
-          // 0 表示菜单 1 表示按钮
-          this.button.type = '1'
-          this.$post('menu', {
+          // 1 表示菜单 2 表示按钮
+          this.button.type = '2'
+          this.$post('resource/add', {
             ...this.button
           }).then(() => {
             this.reset()
@@ -138,7 +138,7 @@ export default {
   watch: {
     buttonAddVisiable () {
       if (this.buttonAddVisiable) {
-        this.$get('menu', {
+        this.$get('resource/list', {
           type: '0'
         }).then((r) => {
           this.menuTreeData = r.data.rows.children

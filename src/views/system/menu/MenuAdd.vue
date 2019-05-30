@@ -10,7 +10,7 @@
     style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
     <a-form :form="form">
       <a-form-item label='菜单名称' v-bind="formItemLayout">
-        <a-input v-model="menu.menuName"
+        <a-input v-model="resource.name"
                  v-decorator="['menuName',
                    {rules: [
                     { required: true, message: '菜单名称不能为空'},
@@ -19,7 +19,7 @@
       </a-form-item>
       <a-form-item label='菜单URL'
                    v-bind="formItemLayout">
-        <a-input v-model="menu.path"
+        <a-input v-model="resource.url"
                  v-decorator="['path',
                  {rules: [
                   { required: true, message: '菜单URL不能为空'},
@@ -28,7 +28,7 @@
       </a-form-item>
       <a-form-item label='组件地址'
                    v-bind="formItemLayout">
-        <a-input v-model="menu.component"
+        <a-input v-model="resource.component"
                  v-decorator="['component',
                  {rules: [
                   { required: true, message: '组件地址不能为空'},
@@ -36,7 +36,7 @@
                 ]}]"/>
       </a-form-item>
       <a-form-item label='相关权限' v-bind="formItemLayout">
-        <a-input v-model="menu.perms"
+        <a-input v-model="resource.permission"
                  v-decorator="['perms',
                    {rules: [
                     { max: 50, message: '长度不能超过50个字符'}
@@ -44,13 +44,13 @@
       </a-form-item>
       <a-form-item label='菜单图标'
                    v-bind="formItemLayout">
-        <a-input ref="icons" v-model="menu.icon" placeholder="点击右侧按钮选择图标">
-          <a-icon v-if="menu.icon" slot="suffix" type="close-circle" @click="deleteIcons"/>
+        <a-input ref="icons" v-model="resource.icon" placeholder="点击右侧按钮选择图标">
+          <a-icon v-if="resource.icon" slot="suffix" type="close-circle" @click="deleteIcons"/>
           <a-icon slot="addonAfter" type="setting" style="cursor: pointer" @click="chooseIcons"/>
         </a-input>
       </a-form-item>
       <a-form-item label='菜单排序' v-bind="formItemLayout">
-        <a-input-number v-model="menu.orderNum" style="width: 100%"/>
+        <a-input-number v-model="resource.priority" style="width: 100%"/>
       </a-form-item>
       <a-form-item label='上级菜单'
                    style="margin-bottom: 2rem"
@@ -108,7 +108,7 @@ export default {
       formItemLayout,
       form: this.$form.createForm(this),
       menuTreeKey: +new Date(),
-      menu: {
+      resource: {
         icon: ''
       },
       checkedKeys: [],
@@ -122,7 +122,7 @@ export default {
       this.loading = false
       this.menuTreeKey = +new Date()
       this.expandedKeys = this.checkedKeys = []
-      this.menu = {}
+      this.resource = {}
       this.form.resetFields()
     },
     onClose () {
@@ -148,11 +148,11 @@ export default {
       this.iconChooseVisible = false
     },
     handleIconChoose (value) {
-      this.menu.icon = value
+      this.resource.icon = value
       this.iconChooseVisible = false
     },
     deleteIcons () {
-      this.menu.icon = ''
+      this.resource.icon = ''
     },
     handleSubmit () {
       let checkedArr = Object.is(this.checkedKeys.checked, undefined) ? this.checkedKeys : this.checkedKeys.checked
@@ -164,14 +164,14 @@ export default {
         if (!err) {
           this.loading = true
           if (checkedArr.length) {
-            this.menu.parentId = checkedArr[0]
+            this.resource.parentId = checkedArr[0]
           } else {
-            this.menu.parentId = ''
+            this.resource.parentId = ''
           }
-          // 0 表示菜单 1 表示按钮
-          this.menu.type = '0'
-          this.$post('menu', {
-            ...this.menu
+          // 1表示菜单 2 表示按钮
+          this.resource.type = '1'
+          this.$post('resource/add', {
+            ...this.resource
           }).then(() => {
             this.reset()
             this.$emit('success')
@@ -185,7 +185,7 @@ export default {
   watch: {
     menuAddVisiable () {
       if (this.menuAddVisiable) {
-        this.$get('menu', {
+        this.$get('resource/list', {
           type: '0'
         }).then((r) => {
           this.menuTreeData = r.data.rows.children
