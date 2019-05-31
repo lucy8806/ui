@@ -8,3 +8,5 @@
  4、下载依赖：yarn install<br>
  5、启动： yarn start
  
+ # 效果图如下：
+ 
