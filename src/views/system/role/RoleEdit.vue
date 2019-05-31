@@ -10,13 +10,13 @@
     style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
     <a-form :form="form">
       <a-form-item label='角色名称' v-bind="formItemLayout">
-        <a-input readOnly v-decorator="['roleName']"/>
+        <a-input readOnly v-decorator="['role']"/>
       </a-form-item>
       <a-form-item label='角色描述' v-bind="formItemLayout">
         <a-textarea
           :rows="4"
           v-decorator="[
-          'remark',
+          'description',
           {rules: [
             { max: 50, message: '长度不能超过50个字符'}
           ]}]">
@@ -134,7 +134,7 @@ export default {
       this.expandedKeys = expandedKeys
     },
     setFormValues ({...role}) {
-      let fields = ['roleName', 'remark']
+      let fields = ['role', 'description']
       Object.keys(role).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)
@@ -154,9 +154,9 @@ export default {
           if (!err) {
             this.loading = true
             let role = this.form.getFieldsValue()
-            role.roleId = this.roleInfoData.roleId
-            role.menuId = checkedArr.join(',')
-            this.$put('role', {
+            role.id = this.roleInfoData.id
+            role.resourceIds = checkedArr.join(',')
+            this.$put('sys/role/update', {
               ...role
             }).then((r) => {
               this.reset()
@@ -172,13 +172,13 @@ export default {
   watch: {
     roleEditVisiable () {
       if (this.roleEditVisiable) {
-        this.$get('menu').then((r) => {
+        this.$get('resource/list').then((r) => {
           this.menuTreeData = r.data.rows.children
           this.allTreeKeys = r.data.ids
-          this.$get('role/menu/' + this.roleInfoData.roleId).then((r) => {
-            this.defaultCheckedKeys.splice(0, this.defaultCheckedKeys.length, r.data)
-            this.checkedKeys = r.data
-            this.expandedKeys = r.data
+          this.$get('sys/role/resource/' + this.roleInfoData.id).then((r) => {
+            this.defaultCheckedKeys.splice(0, this.defaultCheckedKeys.length, r.data.data)
+            this.checkedKeys = r.data.data
+            this.expandedKeys = r.data.data
             this.menuTreeKey = +new Date()
           })
         })

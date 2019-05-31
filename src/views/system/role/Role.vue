@@ -60,7 +60,7 @@
           </a-popover>
         </template>
         <template slot="operation" slot-scope="text, record">
-          <a-icon v-hasPermission="'role:update'" type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修改角色"></a-icon>
+          <a-icon v-hasPermission="'role:edit'" type="setting" theme="twoTone" twoToneColor="#4a9ff5" @click="edit(record)" title="修改角色"></a-icon>
           &nbsp;
           <a-icon type="eye" theme="twoTone" twoToneColor="#42b983" @click="view(record)" title="查看"></a-icon>
         </template>
@@ -136,20 +136,20 @@ export default {
       sortedInfo = sortedInfo || {}
       return [{
         title: '角色',
-        dataIndex: 'roleName'
+        dataIndex: 'role'
       }, {
         title: '描述',
-        dataIndex: 'remark',
+        dataIndex: 'description',
         scopedSlots: { customRender: 'remark' },
         width: 350
       }, {
         title: '创建时间',
-        dataIndex: 'createTime',
+        dataIndex: 'createtime',
         sorter: true,
         sortOrder: sortedInfo.columnKey === 'createTime' && sortedInfo.order
       }, {
         title: '修改时间',
-        dataIndex: 'modifyTime',
+        dataIndex: 'updatetime',
         sorter: true,
         sortOrder: sortedInfo.columnKey === 'modifyTime' && sortedInfo.order
       }, {
@@ -297,7 +297,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      this.$get('role', {
+      this.$get('sys/role/listPage', {
         ...params
       }).then((r) => {
         let data = r.data

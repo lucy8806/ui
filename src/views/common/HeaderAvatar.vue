@@ -54,7 +54,8 @@ export default {
       user: state => state.account.user
     }),
     avatar () {
-      return `static/avatar/${this.user.avatar}`
+      // return `static/avatar/${this.user.avatar}`
+      return `static/avatar/20180414165909.jpg`
     }
   },
   methods: {

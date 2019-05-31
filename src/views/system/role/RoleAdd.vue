@@ -13,12 +13,12 @@
                    v-bind="formItemLayout"
                    :validateStatus="validateStatus"
                    :help="help">
-        <a-input @blur="handleRoleNameBlur" v-model="role.roleName" v-decorator="['roleName']"/>
+        <a-input @blur="handleRoleNameBlur" v-model="role.role" v-decorator="['roleName']"/>
       </a-form-item>
       <a-form-item label='角色描述' v-bind="formItemLayout">
         <a-textarea
           :rows="4"
-          v-model="role.remark"
+          v-model="role.description"
           v-decorator="[
           'remark',
           {rules: [
@@ -85,9 +85,9 @@ export default {
       help: '',
       menuSelectHelp: '',
       role: {
-        roleName: '',
-        remark: '',
-        menuId: ''
+        role: '',
+        description: '',
+        resourceIds: ''
       },
       checkedKeys: [],
       expandedKeys: [],
@@ -145,8 +145,8 @@ export default {
         this.form.validateFields((err, values) => {
           if (!err) {
             this.loading = true
-            this.role.menuId = checkedArr.join(',')
-            this.$post('role', {
+            this.role.resourceIds = checkedArr.join(',')
+            this.$post('sys/role/add', {
               ...this.role
             }).then((r) => {
               this.reset()
@@ -159,15 +159,15 @@ export default {
       }
     },
     handleRoleNameBlur () {
-      let roleName = this.role.roleName.trim()
+      let roleName = this.role.role.trim()
       if (roleName.length) {
         if (roleName.length > 10) {
           this.validateStatus = 'error'
           this.help = '角色名称不能超过10个字符'
         } else {
           this.validateStatus = 'validating'
-          this.$get(`role/check/${roleName}`).then((r) => {
-            if (r.data) {
+          this.$get(`sys/role/check/${roleName}`).then((r) => {
+            if (r.data.data) {
               this.validateStatus = 'success'
               this.help = ''
             } else {
@@ -185,7 +185,7 @@ export default {
   watch: {
     roleAddVisiable () {
       if (this.roleAddVisiable) {
-        this.$get('menu').then((r) => {
+        this.$get('resource/list').then((r) => {
           this.menuTreeData = r.data.rows.children
           this.allTreeKeys = r.data.ids
         })

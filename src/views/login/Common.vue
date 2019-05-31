@@ -49,7 +49,8 @@ export default {
     flex-direction: column;
     height: 100vh;
     overflow: auto;
-    background: #f0f2f5 url('https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg') no-repeat center 110px;
+    //background: #f0f2f5 src('static/img/snow.png') no-repeat center 110px;
+    background-image: url(/static/img/snow.png);
     background-size: 100%;
     .content {
       padding: 32px 0;
